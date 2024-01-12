@@ -1,0 +1,79 @@
+Clear["Global`*"]
+
+dx01 = - r01 + r02 - r11
+dx02 = - r01 + r02
+dx03 = + r01 - r02
+dx04 = + r01 - r02 - r07 + r08  
+dx05 = - r03 + r04 - r05 + r06 - r12
+dx06 = - r03 + r04
+dx07 = + r03 - r04 + r05 - r06
+dx08 = + r03 - r04 - r09 + r10
+dx09 = - r05 + r06
+dx10 = + r05 - r06
+dx11 = - r07 + r08 - r09 + r10
+dx12 = + r07 - r08
+dx13 = + r09 - r10
+dx14 = + r07 - r08 + r09 - r10
+
+x = {x01, x02, x03, x04, x05, x06, x07, x08, x09, x10, 
+       x11, x12, x13, x14}
+f = {dx01,dx02,dx03,dx04,dx05,dx06,dx07,dx08,dx09,dx10,
+       dx11,dx12,dx13,dx14}
+V = D[f,{{r01,r02,r03,r04,r05,r06,r07,r08,r09,r10,r11,r12}}]
+MatrixForm[V]
+Dimensions[V]
+
+d = NullSpace[Transpose[V]]
+MatrixForm[d]
+xc = d . x
+MatrixForm[xc]
+fc = d . f
+MatrixForm[fc]
+
+L = MatrixRank[d]
+
+r01 = ks1 x01 x02 
+r02 = ks2 x03 x04
+r03 = ks3 x05 x06
+r04 = ks4 x07 x08
+r05 = ks5 x05 x09
+r06 = ks6 x07 x10
+r07 = ks7 x04 x11
+r08 = ks8 x12 x14
+r09 = ks9 x08 x11
+r10 = ks10 x13 x14
+r11 = kd x01
+r12 = kd x05
+
+r ={r01,r02,r03,r04,r05,r06,r07,r08,r09,r10,r11,r12}
+MatrixForm[r]
+A1u = D[r, {x}]
+MatrixForm[A1u]
+
+Ns = NullSpace[V]
+MatrixForm[Ns]
+Dimensions[Ns]
+A2u = -Transpose[Ns]
+MatrixForm[A2u]
+
+Au = Join[A1u,A2u,2]
+MatrixForm[Au]
+Dimensions[Au]
+
+A1d = - d
+MatrixForm[A1d]
+
+A2d = {{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, 
+{0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}, {0, 0, 0, 0, 0}}
+MatrixForm[A2d] 
+
+Ad = Join[A1d,A2d,2]
+MatrixForm[Ad]
+
+A = Join[Au, Ad]
+MatrixForm[A]
+Dimensions[A]
+MatrixRank[A]
+
+Ainv = Inverse[A]
+S = -Ainv

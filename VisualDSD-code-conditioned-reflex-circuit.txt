@@ -1,0 +1,51 @@
+directive deterministic { stiff=true }
+directive simulator deterministic
+directive compilation infinite
+directive simulation { final=5.40E+04; plots=[I1();I2();M1();M2();O()]}
+
+// ks [1/nMs]
+new t1 @ 5.3188E-04,5.3188E-04
+new t2 @ 5.3188E-04,5.3188E-04
+new ta @ 5.3188E-04,5.3188E-04
+new tb @ 5.3188E-04,5.3188E-04
+
+// Input 1
+def I1() = <t1^ a1>
+def M1() = {t1^*}[a1 ta^]<s1>
+def W1() = [t1^ a1]{ta^*}
+def Y1() = <a1 ta^ s1>
+
+// Input 2
+def I2() = <t2^ a2>
+def M2() = {t2^*}[a2 ta^]<s1>
+def W2() = [t2^ a2]{ta^*}
+def Y2() = <a2 ta^ s1>
+def Y2p() = <a2 ta^ p>
+def M2p() = {t2^*}[a2 ta^]<p>
+
+// Adder
+def X() = {ta^*}[s1 tb^]<s2>
+def R1() = <a1>[ta^ s1]{tb^*}
+def R2() = <a2>[ta^ s1]{tb^*}
+def O() = <s1 tb^ s2>
+( 100 * I1()
+| 100 * I1() @1.80E+04
+| I1() ->{0.01} // degradation
+| 100 * M1()
+| 0 * W1()
+| 0 * Y1()
+//
+| 100 * I2()
+| 100 * I2() @1.80E+04
+| 100 * I2() @3.60E+04
+| I2() ->{0.01} // degradation
+| 0 * M2()
+| 0 * W2()
+| 0 * Y2()
+| 0 * Y2p()
+| 100 * M2p()
+//
+| 100 * X()
+| 50 * R1()
+| 100 * R2()
+| 0 * O() )
